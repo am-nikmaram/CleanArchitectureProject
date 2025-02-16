@@ -34,8 +34,10 @@ namespace CleanArchitecture.Infrastructure.Persistence
 
             var entitiesAssembly = typeof(IEntity).Assembly;
 
+            //Assembly.GetExecutingAssembly()
+
             modelBuilder.RegisterAllEntities<IEntity>(entitiesAssembly);
-            modelBuilder.RegisterEntityTypeConfiguration(entitiesAssembly);
+            modelBuilder.RegisterEntityTypeConfiguration(Assembly.GetExecutingAssembly());
             modelBuilder.AddRestrictDeleteBehaviorConvention();
             modelBuilder.AddSequentialGuidForIdConvention();
             modelBuilder.AddPluralizingTableNameConvention();
@@ -66,32 +68,5 @@ namespace CleanArchitecture.Infrastructure.Persistence
         }
 
         
-       //private void _cleanString()
-       // {
-       //     var changedEntities = ChangeTracker.Entries()
-       //         .Where(x => x.State == EntityState.Added || x.State == EntityState.Modified);
-       //     foreach (var item in changedEntities)
-       //     {
-       //         if (item.Entity == null)
-       //             continue;
-
-       //         var properties = item.Entity.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-       //             .Where(p => p.CanRead && p.CanWrite && p.PropertyType == typeof(string));
-
-       //         foreach (var property in properties)
-       //         {
-       //             var propName = property.Name;
-       //             var val = (string)property.GetValue(item.Entity, null);
-
-       //             if (val.HasValue())
-       //             {
-       //                 var newVal = val.Fa2En().FixPersianChars();
-       //                 if (newVal == val)
-       //                     continue;
-       //                 property.SetValue(item.Entity, newVal, null);
-       //             }
-       //         }
-       //     }
-       // }
     }
 }
