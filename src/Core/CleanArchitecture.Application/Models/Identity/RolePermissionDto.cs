@@ -1,4 +1,4 @@
-﻿using CleanArc.Domain.Entities.User;
+﻿using CleanArchitecture.Domain.Entities.User;
 
 namespace CleanArchitecture.Application.Models.Identity;
 

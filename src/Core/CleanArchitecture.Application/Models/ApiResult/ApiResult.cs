@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using CleanArc.SharedKernel.Extensions;
+using CleanArchitecture.Shared.Extensions;
 
 namespace CleanArchitecture.Application.Models.ApiResult;
 

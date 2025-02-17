@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Infrastructure.Identity.Jwt;
 
-public class JwtService : Application.Contracts.IJwtService
+public class JwtService : IJwtService
 {
     private readonly IdentitySettings _siteSetting;
     private readonly AppUserManager _userManager;

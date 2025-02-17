@@ -1,5 +1,5 @@
-﻿using CleanArc.Application.Profiles;
-using CleanArc.Domain.Entities.User;
+﻿using CleanArchitecture.Application.Profiles;
+using CleanArchitecture.Domain.Entities.User;
 
 namespace CleanArchitecture.Application.Models.Identity;
 

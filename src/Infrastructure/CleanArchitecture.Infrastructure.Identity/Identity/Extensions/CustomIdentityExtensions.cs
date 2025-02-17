@@ -21,15 +21,15 @@ public class DataProtectionTokenProviderOptions
     public TimeSpan TokenLifespan { get; set; } 
 }
 
-public static class CustomIdentityExtensions
-{
-    public static IdentityBuilder AddPasswordlessLoginTotpTokenProvider(this IdentityBuilder builder)
-    {
-        var userType = builder.UserType;
-        var totpProvider = typeof(PasswordlessLoginTotpTokenProvider<>).MakeGenericType(userType);
-        return builder.AddTokenProvider("PasswordlessLoginTotpProvider", totpProvider);
-    }
-}
+//public static class CustomIdentityExtensions
+//{
+//    public static IdentityBuilder AddPasswordlessLoginTotpTokenProvider(this IdentityBuilder builder)
+//    {
+//        var userType = builder.UserType;
+//        var totpProvider = typeof(PasswordlessLoginTotpTokenProvider<>).MakeGenericType(userType);
+//        return builder.AddTokenProvider("PasswordlessLoginTotpProvider", totpProvider);
+//    }
+//}
 
 public class PasswordlessLoginTotpTokenProvider<TUser> : TotpSecurityStampBasedTokenProvider<TUser>
     where TUser : class

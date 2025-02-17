@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Domain.Entities.User;
+﻿using CleanArchitecture.Application.Models.Jwt;
+using CleanArchitecture.Domain.Entities.User;
 using System.Security.Claims;
 
 namespace CleanArchitecture.Application.Contracts;
