@@ -1,7 +1,11 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
+using CleanArchitecture.Application.Contracts;
+using CleanArchitecture.Application.Models.Jwt;
+using CleanArchitecture.Domain.Entities.User;
+using CleanArchitecture.Infrastructure.Identity.Dtos;
+using CleanArchitecture.Infrastructure.Identity.Identity.Manager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -9,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Infrastructure.Identity.Jwt;
 
-public class JwtService : IJwtService
+public class JwtService : Application.Contracts.IJwtService
 {
     private readonly IdentitySettings _siteSetting;
     private readonly AppUserManager _userManager;
