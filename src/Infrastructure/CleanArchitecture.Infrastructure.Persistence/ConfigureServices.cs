@@ -8,21 +8,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchitecture.Infrastructure.Persistence
+namespace CleanArchitecture.Infrastructure.Persistence;
+
+public static class ConfigureServices
 {
-    public static class ConfigureServices
+    public static IServiceCollection RegisterPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection RegisterPersistenceServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddScoped<AuditableEntityInterceptor>();
+        services.AddScoped<AuditableEntityInterceptor>();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                 options.UseSqlServer(configuration.GetConnectionString("ApplicationDbContext"),
-                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+        services.AddDbContext<ApplicationDbContext>(options =>
+             options.UseSqlServer(configuration.GetConnectionString("ApplicationDbContext"),
+                 builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 
 
-            return services;
-        }
+        return services;
     }
 }

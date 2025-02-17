@@ -1,5 +1,4 @@
 ﻿using CleanArchitecture.Domain.Common;
-using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CleanArchitecture.Infrastructure.Persistence.Extensions;
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Domain.Entities.User;
 
 namespace CleanArchitecture.Infrastructure.Persistence
 {
