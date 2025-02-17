@@ -10,10 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CleanArchitecture.Infrastructure.Persistence.Extensions;
+using CleanArchitecture.Application.Common.Interfaces;
 
 namespace CleanArchitecture.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : IdentityDbContext<User, Role, int>
+    public class ApplicationDbContext : IdentityDbContext<User, Role, int>, IApplicationDbContext
     //DbContext
     {
         public ApplicationDbContext(DbContextOptions options)
@@ -45,28 +46,28 @@ namespace CleanArchitecture.Infrastructure.Persistence
 
         public override int SaveChanges()
         {
-         //   _cleanString();
+            //   _cleanString();
             return base.SaveChanges();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-         //   _cleanString();
+            //   _cleanString();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-         //   _cleanString();
+            //   _cleanString();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-         //   _cleanString();
+            //   _cleanString();
             return base.SaveChangesAsync(cancellationToken);
         }
 
-        
+
     }
 }
