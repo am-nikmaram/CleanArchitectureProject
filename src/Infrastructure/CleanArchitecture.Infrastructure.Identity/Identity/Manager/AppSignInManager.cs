@@ -1,4 +1,4 @@
-﻿using CleanArc.Domain.Entities.User;
+﻿using CleanArchitecture.Domain.Entities.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using CleanArc.SharedKernel.Extensions;
 using CleanArchitecture.Application.Contracts;
 using CleanArchitecture.Application.Contracts.Identity;
 using CleanArchitecture.Application.Models.ApiResult;
