@@ -5,6 +5,7 @@ using CleanArchitecture.Application.Contracts;
 using CleanArchitecture.Application.Models.Jwt;
 using CleanArchitecture.Domain.Entities.User;
 using CleanArchitecture.Infrastructure.Identity.Dtos;
+using CleanArchitecture.Infrastructure.Identity.Extensions;
 using CleanArchitecture.Infrastructure.Identity.Identity.Manager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,17 +20,17 @@ public class JwtService : IJwtService
     private readonly AppUserManager _userManager;
     private IUserClaimsPrincipalFactory<User> _claimsPrincipal;
 
-    private readonly IUnitOfWork _unitOfWork;
+  //  private readonly IUnitOfWork _unitOfWork;
     //private readonly AppUserClaimsPrincipleFactory claimsPrincipleFactory;
 
-    public JwtService(IOptions<IdentitySettings> siteSetting, AppUserManager userManager, IUserClaimsPrincipalFactory<User> claimsPrincipal, IUnitOfWork unitOfWork)
+    public JwtService(IOptions<IdentitySettings> siteSetting, AppUserManager userManager, IUserClaimsPrincipalFactory<User> claimsPrincipal)
     {
         _siteSetting = siteSetting.Value;
         _userManager = userManager;
         _claimsPrincipal = claimsPrincipal;
-        _unitOfWork = unitOfWork;
+  //      _unitOfWork = unitOfWork;
     }
-    public async Task<AccessToken> GenerateAsync(User user)
+    public async Task<AccessToken> GenerateAsync(User user, bool rememberMe = false)
     {
         var secretKey = Encoding.UTF8.GetBytes(_siteSetting.SecretKey); // longer that 16 character
         var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
@@ -57,8 +58,12 @@ public class JwtService : IJwtService
         var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
 
 
-        var refreshToken = await _unitOfWork.UserRefreshTokenRepository.CreateToken(user.Id);
-        await _unitOfWork.CommitAsync();
+        //var refreshToken = await _unitOfWork.UserRefreshTokenRepository.CreateToken(user.Id);
+        //await _unitOfWork.CommitAsync();
+
+        // Generate refresh token using the extension method
+        var refreshToken = await _userManager.GenerateRefreshTokenAsync(user, rememberMe);
+
 
         return new AccessToken(securityToken,refreshToken.ToString());
     }
@@ -92,27 +97,43 @@ public class JwtService : IJwtService
         return result;
     }
 
-    public async Task<AccessToken> RefreshToken(Guid refreshTokenId)
-    {
-        var refreshToken = await _unitOfWork.UserRefreshTokenRepository.GetTokenWithInvalidation(refreshTokenId);
+    //public async Task<AccessToken> RefreshToken(Guid refreshTokenId)
+    //{
+    //    var refreshToken = await _unitOfWork.UserRefreshTokenRepository.GetTokenWithInvalidation(refreshTokenId);
             
-        if (refreshToken is null)
-            return null;
+    //    if (refreshToken is null)
+    //        return null;
 
-        refreshToken.IsValid = false;
+    //    refreshToken.IsValid = false;
 
-        await _unitOfWork.CommitAsync();
+    //    await _unitOfWork.CommitAsync();
 
-        var user = await _unitOfWork.UserRefreshTokenRepository.GetUserByRefreshToken(refreshTokenId);
+    //    var user = await _unitOfWork.UserRefreshTokenRepository.GetUserByRefreshToken(refreshTokenId);
 
-        if (user is null)
-            return null;
+    //    if (user is null)
+    //        return null;
 
-        var result = await this.GenerateAsync(user);
+    //    var result = await this.GenerateAsync(user);
 
-        return result;
+    //    return result;
+    //}
+
+
+    #region added byAI
+
+    public async Task<AccessToken> RefreshTokenAsync(string refreshToken)
+    {
+        var user = await _userManager.GetUserByRefreshTokenAsync(refreshToken);
+
+        if (user == null)
+        {
+            return null; // Invalid refresh token
+        }
+
+        return await GenerateAsync(user, true); // Pass true to extend the session
     }
 
+    #endregion
     private async Task<IEnumerable<Claim>> _getClaimsAsync(User user)
     {
         var result = await _claimsPrincipal.CreateAsync(user);

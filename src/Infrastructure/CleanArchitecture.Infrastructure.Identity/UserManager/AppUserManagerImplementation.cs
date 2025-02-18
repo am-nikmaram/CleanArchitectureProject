@@ -1,4 +1,7 @@
-﻿using CleanArchitecture.Domain.Entities.User;
+﻿using CleanArchitecture.Application.Contracts.Identity;
+using CleanArchitecture.Domain.Entities.User;
+using CleanArchitecture.Infrastructure.Identity.Dtos;
+using CleanArchitecture.Infrastructure.Identity.Identity.Manager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

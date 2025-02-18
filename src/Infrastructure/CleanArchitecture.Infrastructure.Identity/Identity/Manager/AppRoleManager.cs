@@ -1,4 +1,4 @@
-﻿using CleanArc.Domain.Entities.User;
+﻿using CleanArchitecture.Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 

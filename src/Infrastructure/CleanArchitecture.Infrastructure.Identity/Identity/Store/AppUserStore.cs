@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Domain.Entities.User;
+using CleanArchitecture.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 

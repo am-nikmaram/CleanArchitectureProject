@@ -20,7 +20,10 @@ namespace CleanArchitecture.Domain.Entities.User
         public string Name { get; set; }
         public string FamilyName { get; set; }
         public string GeneratedCode { get; set; }
-
+        #region added by AI
+        public string RefreshToken { get; set; } // Add this property
+        public DateTime RefreshTokenExpiryTime { get; set; } // Add this property
+        #endregion
         public ICollection<UserRole> UserRoles { get; set; }
         public ICollection<UserLogin> Logins { get; set; }
         public ICollection<UserClaim> Claims { get; set; }

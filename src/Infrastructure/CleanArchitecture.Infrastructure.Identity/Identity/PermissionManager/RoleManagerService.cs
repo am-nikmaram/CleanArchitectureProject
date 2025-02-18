@@ -1,6 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using AutoMapper;
+using CleanArchitecture.Application.Contracts.Identity;
+using CleanArchitecture.Application.Models.Identity;
+using CleanArchitecture.Domain.Entities.User;
+using CleanArchitecture.Infrastructure.Identity.Identity.Manager;
+using CleanArchitecture.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
