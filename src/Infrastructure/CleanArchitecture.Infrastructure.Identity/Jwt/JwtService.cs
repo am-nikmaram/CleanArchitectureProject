@@ -121,9 +121,9 @@ public class JwtService : IJwtService
 
     #region added byAI
 
-    public async Task<AccessToken> RefreshTokenAsync(string refreshToken)
+    public async Task<AccessToken> RefreshTokenAsync(Guid refreshToken)
     {
-        var user = await _userManager.GetUserByRefreshTokenAsync(refreshToken);
+        var user = await _userManager.GetUserByRefreshTokenAsync(refreshToken.ToString());
 
         if (user == null)
         {
