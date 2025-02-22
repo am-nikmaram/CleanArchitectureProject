@@ -9,5 +9,9 @@ internal class UserConfig:IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users","usr").Property(p => p.Id).HasColumnName("UserId");
+        builder.Property(p => p.FamilyName).IsRequired(false);
+        builder.Property(p => p.Name).IsRequired(false);
+        builder.Property(p => p.RefreshToken).IsRequired(false);
+     
     }
 }
