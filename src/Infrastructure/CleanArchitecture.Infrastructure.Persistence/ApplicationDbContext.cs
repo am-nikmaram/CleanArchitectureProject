@@ -1,27 +1,30 @@
 ﻿using CleanArchitecture.Domain.Common;
-using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CleanArchitecture.Infrastructure.Persistence.Extensions;
-using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Domain.Entities.User;
+using System.Reflection;
+using CleanArchitecture.Application.Contracts;
 
 namespace CleanArchitecture.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : IdentityDbContext<User, Role, int>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IApplicationDbContext
     //DbContext
     {
-        public ApplicationDbContext(DbContextOptions options)
-            : base(options)
-        {
 
+        public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+        public ApplicationDbContext(DbContextOptions options)
+        : base(options)
+        {
+            base.SavingChanges += OnSavingChanges;
         }
+
+        private void OnSavingChanges(object sender, SavingChangesEventArgs e)
+        {
+            ConfigureEntityDates();
+        }
+
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -38,7 +41,7 @@ namespace CleanArchitecture.Infrastructure.Persistence
             //Assembly.GetExecutingAssembly()
 
             modelBuilder.RegisterAllEntities<IEntity>(entitiesAssembly);
-            modelBuilder.RegisterEntityTypeConfiguration(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             modelBuilder.AddRestrictDeleteBehaviorConvention();
             modelBuilder.AddSequentialGuidForIdConvention();
             modelBuilder.AddPluralizingTableNameConvention();
@@ -69,5 +72,30 @@ namespace CleanArchitecture.Infrastructure.Persistence
         }
 
 
+        private void ConfigureEntityDates()
+        {
+            var updatedEntities = ChangeTracker.Entries().Where(x =>
+                x.Entity is ITimeModification && x.State == EntityState.Modified).Select(x => x.Entity as ITimeModification);
+
+            var addedEntities = ChangeTracker.Entries().Where(x =>
+                x.Entity is ITimeModification && x.State == EntityState.Added).Select(x => x.Entity as ITimeModification);
+
+            foreach (var entity in updatedEntities)
+            {
+                if (entity != null)
+                {
+                    entity.ModifiedDate = DateTime.Now;
+                }
+            }
+
+            foreach (var entity in addedEntities)
+            {
+                if (entity != null)
+                {
+                    entity.CreatedTime = DateTime.Now;
+                    entity.ModifiedDate = DateTime.Now;
+                }
+            }
+        }
     }
 }

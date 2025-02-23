@@ -1,0 +1,3 @@
+﻿namespace CleanArchitecture.Application.Features.Role.GetAuthorizableRoutesQuery;
+
+public record GetAuthorizableRoutesQueryResponse(string RouteKey,string AreaName,string ControllerName,string ActionName,string ControllerDescription);
