@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
+using CleanArchitecture.Application.Contracts;
 
 namespace CleanArchitecture.Infrastructure.Persistence;
 
@@ -39,6 +40,8 @@ public static class ServiceCollectionExtensions
         {
             options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
         });
+
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         return services;
     }
 
