@@ -3,15 +3,17 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CleanArchitecture.Infrastructure.Persistence.Extensions;
-using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities.User;
 using System.Reflection;
+using CleanArchitecture.Application.Contracts;
 
 namespace CleanArchitecture.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IApplicationDbContext
     //DbContext
     {
+
+        public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
         public ApplicationDbContext(DbContextOptions options)
         : base(options)
         {

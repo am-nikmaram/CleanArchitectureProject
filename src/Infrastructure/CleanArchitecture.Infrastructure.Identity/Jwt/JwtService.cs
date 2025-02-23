@@ -20,15 +20,17 @@ public class JwtService : IJwtService
     private readonly AppUserManager _userManager;
     private IUserClaimsPrincipalFactory<User> _claimsPrincipal;
 
+    private readonly IApplicationDbContext _applicationDbContext;
   //  private readonly IUnitOfWork _unitOfWork;
     //private readonly AppUserClaimsPrincipleFactory claimsPrincipleFactory;
 
-    public JwtService(IOptions<IdentitySettings> siteSetting, AppUserManager userManager, IUserClaimsPrincipalFactory<User> claimsPrincipal)
+    public JwtService(IOptions<IdentitySettings> siteSetting, AppUserManager userManager, IUserClaimsPrincipalFactory<User> claimsPrincipal, IApplicationDbContext applicationDbContext)
     {
         _siteSetting = siteSetting.Value;
         _userManager = userManager;
         _claimsPrincipal = claimsPrincipal;
-  //      _unitOfWork = unitOfWork;
+        //      _unitOfWork = unitOfWork;
+        _applicationDbContext=applicationDbContext;
     }
     public async Task<AccessToken> GenerateAsync(User user, bool rememberMe = false)
     {
@@ -61,11 +63,17 @@ public class JwtService : IJwtService
         //var refreshToken = await _unitOfWork.UserRefreshTokenRepository.CreateToken(user.Id);
         //await _unitOfWork.CommitAsync();
 
+        var token = new UserRefreshToken { IsValid = true, UserId = user.Id };
+        _applicationDbContext.UserRefreshTokens.Add(token);
+        _applicationDbContext.SaveChanges();
+        
+        
+
         // Generate refresh token using the extension method
-        var refreshToken = await _userManager.GenerateRefreshTokenAsync(user, rememberMe);
+      //  var refreshToken = await _userManager.GenerateRefreshTokenAsync(user, rememberMe);
 
 
-        return new AccessToken(securityToken,refreshToken.ToString());
+        return new AccessToken(securityToken,token.Id.ToString());
     }
 
     public Task<ClaimsPrincipal> GetPrincipalFromExpiredToken(string token)
@@ -97,38 +105,29 @@ public class JwtService : IJwtService
         return result;
     }
 
-    //public async Task<AccessToken> RefreshToken(Guid refreshTokenId)
-    //{
-    //    var refreshToken = await _unitOfWork.UserRefreshTokenRepository.GetTokenWithInvalidation(refreshTokenId);
-            
-    //    if (refreshToken is null)
-    //        return null;
 
-    //    refreshToken.IsValid = false;
-
-    //    await _unitOfWork.CommitAsync();
-
-    //    var user = await _unitOfWork.UserRefreshTokenRepository.GetUserByRefreshToken(refreshTokenId);
-
-    //    if (user is null)
-    //        return null;
-
-    //    var result = await this.GenerateAsync(user);
-
-    //    return result;
-    //}
 
 
     #region added byAI
 
     public async Task<AccessToken> RefreshTokenAsync(Guid refreshToken)
     {
-        var user = await _userManager.GetUserByRefreshTokenAsync(refreshToken.ToString());
 
-        if (user == null)
+        var refreshtoken =await _applicationDbContext.UserRefreshTokens.Where(t => t.IsValid && t.Id.Equals(refreshToken)).FirstOrDefaultAsync();
+
+
+        if (refreshtoken == null)
         {
             return null; // Invalid refresh token
         }
+
+        refreshtoken.IsValid = false;
+        _applicationDbContext.UserRefreshTokens.Update(refreshtoken);
+
+        var user = await _applicationDbContext.UserRefreshTokens.Include(t => t.User).Where(c => c.Id.Equals(refreshToken))
+          .Select(c => c.User).FirstOrDefaultAsync();
+        if (user is null)
+            return null;
 
         return await GenerateAsync(user, true); // Pass true to extend the session
     }
